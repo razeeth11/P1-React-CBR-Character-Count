@@ -71,11 +71,11 @@ export function CharacterCounter() {
             <p>No characters found.Start typing to get letters density.</p>
           </div>
 
-          {/* <div className="flex items-center gap-2.5 whitespace-nowrap mt-10 text-lg">
+          <div className="flex items-center gap-2.5 whitespace-nowrap mt-10 text-lg">
             <p>A</p>
             <Progress value={56} className="h-3" />
             <p>40 (16.90%)</p>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>
