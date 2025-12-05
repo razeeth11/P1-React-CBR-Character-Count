@@ -55,9 +55,9 @@ export function CharacterCounter() {
   }
 
   return (
-    <div className="max-w-[900px] m-auto">
+    <div className="max-w-[900px] m-auto p-5">
       <div className="flex items-center justify-between p-1.5">
-        <h4 className="text-2xl">Character Counter</h4>
+        <h4 className="text-xl md:text-2xl">Character Counter</h4>
         <Button
           className="cursor-pointer"
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -66,20 +66,20 @@ export function CharacterCounter() {
         </Button>
       </div>
       <div>
-        <h1 className="text-[52px] font-bold w-[50%] text-center m-auto mt-10">
+        <h1 className="text-4xl md:text-5xl font-bold w-[50%] text-center m-auto my-5 md:my-10">
           Analyze your text in real-time.
         </h1>
 
         <div className="mt-5">
           <Textarea
-            className="h-50"
+            className="h-30 md:h-50"
             placeholder="Type your message here."
             onChange={(e) => calculateFunction(e.target.value)}
           />
 
-          <div className="flex items-center gap-5 mt-10">
+          <div className="flex flex-col sm:flex-row items-center gap-5  my-5 md:my-10">
             {countList.map((item, index) => (
-              <div key={index} className="w-4/12">
+              <div key={index} className="w-full sm:w-4/12">
                 <CharCount
                   countName={item.countTypeName}
                   countType={item.countType}
