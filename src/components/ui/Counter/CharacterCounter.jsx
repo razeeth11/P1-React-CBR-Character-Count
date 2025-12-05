@@ -1,15 +1,12 @@
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { useTheme } from "next-themes";
 
 export function CharacterCounter() {
   const { theme, setTheme } = useTheme();
-  const [characterLimit, setCharacterLimit] = useState(200);
   const [count, setCount] = useState({
     charCount: 0,
     wordCount: 0,
@@ -33,11 +30,9 @@ export function CharacterCounter() {
   ];
 
   function calculateFunction(value) {
-    const defValue = value.length;
-    const splittedArr = value.split("");
-
-    const charCount = defValue;
-    const wordCount = value.split(" ").length;
+    const defValue = value.trim().length;
+    const charCount = value.split("").filter((e) => e != " ").length;
+    const wordCount = value.split(" ").filter((v) => v != "").length;
     const sentenceCount = value.split(".").length;
 
     setCount({
@@ -45,6 +40,18 @@ export function CharacterCounter() {
       wordCount: defValue ? wordCount : 0,
       sentenceCount: defValue ? sentenceCount : 0,
     });
+
+    let results = {};
+    for (let char of value.toLowerCase()) {
+      results[char] = (results[char] || 0) + 1;
+    }
+
+    const letterArray = Object.keys(results).map((k) => ({
+      char: k,
+      count: results[k],
+    }));
+
+    setLettersDensity(letterArray.filter((l) => l.char != " "));
   }
 
   return (
@@ -70,17 +77,6 @@ export function CharacterCounter() {
             onChange={(e) => calculateFunction(e.target.value)}
           />
 
-          <div className="flex items-center gap-10 my-5">
-            <div className="flex items-center gap-2.5">
-              <Checkbox id="excludeSpaces" />
-              <Label htmlFor="excludeSpaces">Exclude spaces</Label>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <Checkbox id="charLimit" />
-              <Label htmlFor="charLimit">Set character limit</Label>
-            </div>
-          </div>
-
           <div className="flex items-center gap-5 mt-10">
             {countList.map((item, index) => (
               <div key={index} className="w-4/12">
@@ -99,7 +95,11 @@ export function CharacterCounter() {
           <div className="mt-5">
             {count.charCount ? (
               <div>
-                <ProgressCount />
+                {lettersDensity.map((l, i) => (
+                  <div key={i}>
+                    <ProgressCount densObj={l} totalCount={count.charCount} />
+                  </div>
+                ))}
               </div>
             ) : (
               <p>No characters found. Start typing to get letters density.</p>
@@ -120,12 +120,17 @@ function CharCount({ countName, countType }) {
   );
 }
 
-function ProgressCount() {
+function ProgressCount({ densObj, totalCount }) {
+  const { char, count } = densObj;
+  const percentage = (count / totalCount) * 100;
+
   return (
     <div className="flex items-center gap-2.5 whitespace-nowrap text-lg">
-      <p>A</p>
-      <Progress value={56} className="h-3" />
-      <p>40 (16.90%)</p>
+      <p className="capitalize w-0.5/12">{char}</p>
+      <Progress value={percentage.toFixed(0)} className="h-3 w-11/12" />
+      <p className="w-0.5/12">
+        {count} ({percentage.toFixed(0)}%)
+      </p>
     </div>
   );
 }
